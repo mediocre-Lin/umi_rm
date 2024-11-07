@@ -16,7 +16,7 @@ from utils.usb_util import reset_all_elgato_devices, get_sorted_v4l_paths
 from utils.interpolation_util import get_interp1d, PoseInterpolator
 
 
-class Arx5JetsonEnv:
+class Arx5Env:
     def __init__(
         self,
         # required params

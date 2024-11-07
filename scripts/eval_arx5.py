@@ -50,7 +50,7 @@ from utils.real_inference_util import (
 )
 from peripherals.spacemouse_shared_memory import Spacemouse
 from utils.pose_util import pose_to_mat, mat_to_pose
-from modules.arx5_env import Arx5JetsonEnv
+from modules.arx5_env import Arx5Env
 import zmq
 
 OmegaConf.register_new_resolver("eval", eval, replace=True)
@@ -258,7 +258,7 @@ def main(
     with SharedMemoryManager() as shm_manager:
         with Spacemouse(
             shm_manager=shm_manager, deadzone=0.1
-        ) as sm, KeystrokeCounter() as key_counter, Arx5JetsonEnv(
+        ) as sm, KeystrokeCounter() as key_counter, Arx5Env(
             output_dir=output,
             robots_config=robots_config,
             frequency=frequency,
