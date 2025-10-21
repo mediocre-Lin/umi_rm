@@ -7,8 +7,7 @@ Make sure you can hit the robot hardware emergency-stop button quickly!
 
 Recording control:
 Click the opencv window (make sure it's in focus).
-Press "S" to stop evaluation.
-Press "Q" to exit program.
+The program will run until max_duration is reached or interrupted.
 """
 
 # %%
@@ -32,7 +31,6 @@ import numpy as np
 import scipy.spatial.transform as st
 from omegaconf import OmegaConf
 from utils.other_util import precise_wait
-from peripherals.keystroke_counter import KeystrokeCounter, Key, KeyCode
 from utils.real_inference_util import (
     get_real_obs_dict,
     get_real_obs_resolution,
@@ -234,7 +232,7 @@ def main(
 
     print("steps_per_inference:", steps_per_inference)
     with SharedMemoryManager() as shm_manager:
-        with KeystrokeCounter() as key_counter, Arx5Env(
+        with Arx5Env(
             output_dir=output,
             robots_config=robots_config,
             frequency=frequency,
@@ -472,23 +470,10 @@ def main(
                         cv2.imshow("default", vis_img[..., ::-1])
 
                         _ = cv2.pollKey()
-                        press_events = key_counter.get_press_events()
-                        stop_episode = False
-                        for key_stroke in press_events:
-                            if key_stroke == KeyCode(char="q"):
-                                # Exit program
-                                env.end_episode()
-                                exit(0)
-                            elif key_stroke == KeyCode(char="s"):
-                                # Stop episode
-                                print("Stopped.")
-                                stop_episode = True
 
                         t_since_start = time.time() - eval_t_start
                         if t_since_start > max_duration:
                             print("Max Duration reached.")
-                            stop_episode = True
-                        if stop_episode:
                             env.end_episode()
                             break
 
